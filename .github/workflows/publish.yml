@@ -49,10 +49,17 @@ jobs:
 
       - name: Publish to GitHub Packages (Python registry)
         env:
-          TWINE_USERNAME: ${{ github.actor }}
-          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          # GitHub Packages Python registry for this owner
-          # GitHub Packages Python registry upload endpoint usually expects the legacy path
-          TWINE_REPOSITORY_URL: https://pip.pkg.github.com/prashantevolvus/legacy/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          # Use owner-scoped Python registry, legacy upload endpoint
+          TWINE_REPOSITORY_URL: https://pip.pkg.github.com/${{ github.repository_owner }}/legacy/
         run: |
-          python -m twine upload --repository-url "$TWINE_REPOSITORY_URL" dist/*
+          # Prefer a PAT with write:packages if provided; fallback to GITHUB_TOKEN
+          export TWINE_USERNAME="$GITHUB_ACTOR"
+          if [ -n "$GH_PACKAGES_TOKEN" ]; then
+            export TWINE_PASSWORD="$GH_PACKAGES_TOKEN"
+          else
+            export TWINE_PASSWORD="$GITHUB_TOKEN"
+          fi
+          python -m twine upload --verbose --repository-url "$TWINE_REPOSITORY_URL" dist/*
