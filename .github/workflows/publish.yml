@@ -51,12 +51,7 @@ jobs:
         env:
           TWINE_USERNAME: ${{ github.actor }}
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          # Provide your GitHub Packages Python repository URL via env or replace below.
-          # Example for GitHub Packages Python index (installation): https://pip.pkg.github.com/${{ github.repository_owner }}
-          # For publishing, set TWINE_REPOSITORY_URL appropriately (see README instructions).
-          TWINE_REPOSITORY_URL: ${{ secrets.TWINE_REPOSITORY_URL }}
+          # GitHub Packages Python registry for this owner
+          TWINE_REPOSITORY_URL: https://pip.pkg.github.com/prashantevolvus
         run: |
-          if [ -z "${TWINE_REPOSITORY_URL}" ]; then
-            echo "TWINE_REPOSITORY_URL is not set. Skipping upload step." && exit 0
-          fi
           python -m twine upload --repository-url "$TWINE_REPOSITORY_URL" dist/*
