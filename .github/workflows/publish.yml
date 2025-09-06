@@ -52,6 +52,7 @@ jobs:
           TWINE_USERNAME: ${{ github.actor }}
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           # GitHub Packages Python registry for this owner
-          TWINE_REPOSITORY_URL: https://pip.pkg.github.com/prashantevolvus
+          # GitHub Packages Python registry upload endpoint usually expects the legacy path
+          TWINE_REPOSITORY_URL: https://pip.pkg.github.com/prashantevolvus/legacy/
         run: |
           python -m twine upload --repository-url "$TWINE_REPOSITORY_URL" dist/*
