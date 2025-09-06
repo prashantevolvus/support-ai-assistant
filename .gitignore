@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+pip-wheel-metadata/
+.pytest_cache/
+
+# Virtual envs
+.venv/
+.venv-ci/
+venv/
+env/
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Local data
+data.db
+.env

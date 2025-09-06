@@ -1,0 +1,62 @@
+name: build-and-publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+
+      - name: Install build tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine
+
+      - name: Install project dependencies (for tests)
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest -q
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+      - name: Publish to GitHub Packages (Python registry)
+        env:
+          TWINE_USERNAME: ${{ github.actor }}
+          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          # Provide your GitHub Packages Python repository URL via env or replace below.
+          # Example for GitHub Packages Python index (installation): https://pip.pkg.github.com/${{ github.repository_owner }}
+          # For publishing, set TWINE_REPOSITORY_URL appropriately (see README instructions).
+          TWINE_REPOSITORY_URL: ${{ secrets.TWINE_REPOSITORY_URL }}
+        run: |
+          if [ -z "${TWINE_REPOSITORY_URL}" ]; then
+            echo "TWINE_REPOSITORY_URL is not set. Skipping upload step." && exit 0
+          fi
+          python -m twine upload --repository-url "$TWINE_REPOSITORY_URL" dist/*
