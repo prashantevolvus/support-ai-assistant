@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flux-support-ai-assistant"
-version = "0.1.2"
+version = "0.1.3"
 description = "FastAPI service for Flux support: upload tickets/docs and answer troubleshooting queries using retrieval and LLM."
 readme = "README.md"
 requires-python = ">=3.9"
