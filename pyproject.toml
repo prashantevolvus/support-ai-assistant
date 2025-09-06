@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flux-support-ai-assistant"
-version = "0.1.0"
+version = "0.1.1"
 description = "FastAPI service for Flux support: upload tickets/docs and answer troubleshooting queries using retrieval and LLM."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -32,3 +32,6 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
